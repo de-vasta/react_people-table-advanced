@@ -1,4 +1,31 @@
-export const Navbar = () => {
+import { NavLink } from 'react-router-dom';
+
+import classNames from 'classnames';
+import { AppPath } from '../types/paths';
+
+interface NavLinkProp {
+  className: ({ isActive }: { isActive: boolean }) => string;
+  to: string;
+  text: string;
+}
+
+const NavBar = () => {
+  const linkClassName = ({ isActive }: { isActive: boolean }) =>
+    classNames('navbar-item', { 'has-background-grey-lighter': isActive });
+
+  const navLinks: NavLinkProp[] = [
+    {
+      className: linkClassName,
+      to: '/',
+      text: 'Home',
+    },
+    {
+      className: linkClassName,
+      to: AppPath.People,
+      text: 'People',
+    },
+  ];
+
   return (
     <nav
       data-cy="nav"
@@ -8,19 +35,15 @@ export const Navbar = () => {
     >
       <div className="container">
         <div className="navbar-brand">
-          <a className="navbar-item" href="#/">
-            Home
-          </a>
-
-          <a
-            aria-current="page"
-            className="navbar-item has-background-grey-lighter"
-            href="#/people"
-          >
-            People
-          </a>
+          {navLinks.map(({ className, to, text }) => (
+            <NavLink key={to} className={className} to={to}>
+              {text}
+            </NavLink>
+          ))}
         </div>
       </div>
     </nav>
   );
 };
+
+export default NavBar;
