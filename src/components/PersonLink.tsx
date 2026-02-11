@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import { AppPath, Person, Sex } from '../types';
 
@@ -13,8 +13,13 @@ interface Props {
 }
 
 const PersonLink = ({ person: { name, sex, slug } }: Props) => {
+  const { search } = useLocation();
+
   return (
-    <Link to={`${AppPath.People}/${slug}`} className={getPersonClassName(sex)}>
+    <Link
+      to={{ pathname: `${AppPath.People}/${slug}`, search }}
+      className={getPersonClassName(sex)}
+    >
       {name}
     </Link>
   );
