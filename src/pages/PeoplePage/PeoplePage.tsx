@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { PeopleFilters } from '../../components/PeopleFilters';
+import { PeopleFilters } from '../../components/PeopleFilters/PeopleFilters';
 import PeopleContent from './PeopleContent';
 import { usePeople } from '../../hooks/usePeople';
 
