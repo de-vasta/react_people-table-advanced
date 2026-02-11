@@ -1,18 +1,44 @@
+import { useState } from 'react';
+import { Sex } from '../types';
+import classNames from 'classnames';
+import { SearchLink } from './SearchLink';
+import { FilterParam } from '../types/filterParams';
+
+type SexFilter = 'Male' | 'Female' | 'All';
+
+type SexTab = {
+  name: SexFilter;
+  params: { [FilterParam.Sex]: Sex | null };
+};
+
 export const PeopleFilters = () => {
+  const [selectedSex, setSelectedSex] = useState<SexFilter>('All');
+
+  const sexTabs: SexTab[] = [
+    { name: 'All', params: { [FilterParam.Sex]: null } },
+    { name: 'Male', params: { [FilterParam.Sex]: Sex.Male } },
+    { name: 'Female', params: { [FilterParam.Sex]: Sex.Female } },
+  ];
+
   return (
     <nav className="panel">
       <p className="panel-heading">Filters</p>
 
       <p className="panel-tabs" data-cy="SexFilter">
-        <a className="is-active" href="#/people">
-          All
-        </a>
-        <a className="" href="#/people?sex=m">
-          Male
-        </a>
-        <a className="" href="#/people?sex=f">
-          Female
-        </a>
+        {sexTabs.map(({ name, params }) => (
+          <SearchLink
+            key={name}
+            className={classNames({
+              'is-active': selectedSex === name,
+            })}
+            onClick={() => {
+              setSelectedSex(name);
+            }}
+            params={params}
+          >
+            {name}
+          </SearchLink>
+        ))}
       </p>
 
       <div className="panel-block">

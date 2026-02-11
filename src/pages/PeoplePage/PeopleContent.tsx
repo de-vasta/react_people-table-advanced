@@ -1,12 +1,15 @@
+import { Person } from '../../types';
 import PeopleTable from '../../components/PeopleTable';
 import { Loader } from '../../components/Loader';
-import { useParams } from 'react-router-dom';
-import { usePeople } from '../../hooks/usePeople';
 
-const PeopleContent = () => {
-  const { people, isLoading, hasError } = usePeople();
-  const { slug } = useParams();
+interface Props {
+  isLoading: boolean;
+  hasError: boolean;
+  people: Person[];
+  slug?: string;
+}
 
+const PeopleContent = ({ people, slug, isLoading, hasError }: Props) => {
   if (isLoading) {
     return <Loader />;
   }

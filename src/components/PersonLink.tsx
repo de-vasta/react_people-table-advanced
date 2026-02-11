@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { Person, Sex } from '../types';
+import { AppPath, Person, Sex } from '../types';
 
 const FEMALE_CLASS_NAME = 'has-text-danger';
 
@@ -14,7 +14,7 @@ interface Props {
 
 const PersonLink = ({ person: { name, sex, slug } }: Props) => {
   return (
-    <Link to={`./${slug}`} className={getPersonClassName(sex)}>
+    <Link to={`${AppPath.People}/${slug}`} className={getPersonClassName(sex)}>
       {name}
     </Link>
   );
