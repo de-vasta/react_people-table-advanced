@@ -5,10 +5,12 @@ import { FilterParam } from '../../types/filterParams';
 const centuriesButtons = ['16', '17', '18', '19', '20'];
 
 interface Props {
-  selectedCenturies: string[];
+  searchParams: URLSearchParams;
 }
 
-const CenturyFilter = ({ selectedCenturies }: Props) => {
+const CenturyFilter = ({ searchParams }: Props) => {
+  const selectedCenturies = searchParams.getAll(FilterParam.Century);
+
   const toggleCentury = (century: string) => {
     return selectedCenturies.includes(century)
       ? selectedCenturies.filter(c => c !== century)
@@ -36,7 +38,9 @@ const CenturyFilter = ({ selectedCenturies }: Props) => {
         <div className="level-right ml-4">
           <SearchLink
             data-cy="centuryALL"
-            className="button is-success is-outlined"
+            className={classNames('button is-success', {
+              'is-outlined': searchParams.getAll(FilterParam.Century).length,
+            })}
             params={{ [FilterParam.Century]: null }}
           >
             All

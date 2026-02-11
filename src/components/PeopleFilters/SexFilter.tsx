@@ -17,10 +17,12 @@ const sexTabs: SexTab[] = [
 ];
 
 interface Props {
-  selectedSexParam: string | null;
+  searchParams: URLSearchParams;
 }
 
-const SexFilter = ({ selectedSexParam }: Props) => {
+const SexFilter = ({ searchParams }: Props) => {
+  const selectedSexParam = searchParams.get(FilterParam.Sex);
+
   const selectedSex: SexFilterOptions = (() => {
     switch (selectedSexParam) {
       case Sex.Male:

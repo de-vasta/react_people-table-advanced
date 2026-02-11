@@ -3,12 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 import SexFilter from './SexFilter';
 import CenturyFilter from './CenturyFilter';
 import { SearchLink } from '../SearchLink';
+import { getSearchWith, SearchParams } from '../../utils/searchHelper';
+import SearchFilter from './SearchFilter';
+import classNames from 'classnames';
 
 export const PeopleFilters = () => {
-  const [searchParams] = useSearchParams();
-
-  const selectedSexParam = searchParams.get(FilterParam.Sex);
-  const selectedCenturies = searchParams.getAll(FilterParam.Century);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const clearSearchParams = {
     [FilterParam.Name]: null,
@@ -16,28 +16,22 @@ export const PeopleFilters = () => {
     [FilterParam.Century]: null,
   };
 
+  const handleSearchParamsChange = (params: SearchParams) => {
+    setSearchParams(getSearchWith(searchParams, params));
+  };
+
   return (
     <nav className="panel">
       <p className="panel-heading">Filters</p>
-      <SexFilter selectedSexParam={selectedSexParam} />
-      <div className="panel-block">
-        <p className="control has-icons-left">
-          <input
-            data-cy="NameFilter"
-            type="search"
-            className="input"
-            placeholder="Search"
-          />
-
-          <span className="icon is-left">
-            <i className="fas fa-search" aria-hidden="true" />
-          </span>
-        </p>
-      </div>
-      <CenturyFilter selectedCenturies={selectedCenturies} />
+      <SexFilter searchParams={searchParams} />
+      <SearchFilter
+        searchParams={searchParams}
+        onSearchParamsChange={handleSearchParamsChange}
+      />
+      <CenturyFilter searchParams={searchParams} />
       <div className="panel-block">
         <SearchLink
-          className="button is-link is-outlined is-fullwidth"
+          className={classNames('button is-link is-outlined is-fullwidth')}
           params={clearSearchParams}
         >
           Reset all filters
