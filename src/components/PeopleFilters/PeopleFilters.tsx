@@ -1,4 +1,4 @@
-import { FilterParam } from '../../types/filterParams';
+import { SearchParamKey } from '../../types/searchParams';
 import { useSearchParams } from 'react-router-dom';
 import SexFilter from './SexFilter';
 import CenturyFilter from './CenturyFilter';
@@ -11,9 +11,9 @@ export const PeopleFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const clearSearchParams = {
-    [FilterParam.Name]: null,
-    [FilterParam.Sex]: null,
-    [FilterParam.Century]: null,
+    [SearchParamKey.Name]: null,
+    [SearchParamKey.Sex]: null,
+    [SearchParamKey.Century]: null,
   };
 
   const handleSearchParamsChange = (params: SearchParams) => {

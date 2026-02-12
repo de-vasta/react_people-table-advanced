@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { SearchLink } from '../SearchLink';
-import { FilterParam } from '../../types/filterParams';
+import { SearchParamKey } from '../../types/searchParams';
 
 const centuriesButtons = ['16', '17', '18', '19', '20'];
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const CenturyFilter = ({ searchParams }: Props) => {
-  const selectedCenturies = searchParams.getAll(FilterParam.Century);
+  const selectedCenturies = searchParams.getAll(SearchParamKey.Century);
 
   const toggleCentury = (century: string) => {
     return selectedCenturies.includes(century)
@@ -28,7 +28,7 @@ const CenturyFilter = ({ searchParams }: Props) => {
               className={classNames('button mr-1', {
                 'is-info': selectedCenturies.includes(century),
               })}
-              params={{ [FilterParam.Century]: toggleCentury(century) }}
+              params={{ [SearchParamKey.Century]: toggleCentury(century) }}
             >
               {century}
             </SearchLink>
@@ -39,9 +39,9 @@ const CenturyFilter = ({ searchParams }: Props) => {
           <SearchLink
             data-cy="centuryALL"
             className={classNames('button is-success', {
-              'is-outlined': searchParams.getAll(FilterParam.Century).length,
+              'is-outlined': searchParams.getAll(SearchParamKey.Century).length,
             })}
-            params={{ [FilterParam.Century]: null }}
+            params={{ [SearchParamKey.Century]: null }}
           >
             All
           </SearchLink>

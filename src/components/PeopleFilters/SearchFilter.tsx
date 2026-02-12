@@ -1,4 +1,4 @@
-import { FilterParam } from '../../types/filterParams';
+import { SearchParamKey } from '../../types/searchParams';
 import { SearchParams } from '../../utils/searchHelper';
 
 interface Props {
@@ -7,13 +7,13 @@ interface Props {
 }
 
 const SearchFilter = ({ searchParams, onSearchParamsChange }: Props) => {
-  const nameQuery = searchParams.get(FilterParam.Name) ?? '';
+  const nameQuery = searchParams.get(SearchParamKey.Name) ?? '';
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const normalized = event.target.value.trim();
 
     onSearchParamsChange({
-      [FilterParam.Name]: normalized || null,
+      [SearchParamKey.Name]: normalized || null,
     });
   };
 

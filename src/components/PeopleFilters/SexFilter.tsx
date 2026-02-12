@@ -1,5 +1,5 @@
 import { SearchLink } from '../SearchLink';
-import { FilterParam } from '../../types/filterParams';
+import { SearchParamKey } from '../../types/searchParams';
 import { Sex } from '../../types';
 import classNames from 'classnames';
 
@@ -7,13 +7,13 @@ type SexFilterOptions = 'Male' | 'Female' | 'All';
 
 type SexTab = {
   name: SexFilterOptions;
-  params: { [FilterParam.Sex]: Sex | null };
+  params: { [SearchParamKey.Sex]: Sex | null };
 };
 
 const sexTabs: SexTab[] = [
-  { name: 'All', params: { [FilterParam.Sex]: null } },
-  { name: 'Male', params: { [FilterParam.Sex]: Sex.Male } },
-  { name: 'Female', params: { [FilterParam.Sex]: Sex.Female } },
+  { name: 'All', params: { [SearchParamKey.Sex]: null } },
+  { name: 'Male', params: { [SearchParamKey.Sex]: Sex.Male } },
+  { name: 'Female', params: { [SearchParamKey.Sex]: Sex.Female } },
 ];
 
 interface Props {
@@ -21,7 +21,7 @@ interface Props {
 }
 
 const SexFilter = ({ searchParams }: Props) => {
-  const selectedSexParam = searchParams.get(FilterParam.Sex);
+  const selectedSexParam = searchParams.get(SearchParamKey.Sex);
 
   const selectedSex: SexFilterOptions = (() => {
     switch (selectedSexParam) {

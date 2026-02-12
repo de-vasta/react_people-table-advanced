@@ -1,11 +1,9 @@
-import { useParams } from 'react-router-dom';
 import { PeopleFilters } from '../../components/PeopleFilters/PeopleFilters';
 import PeopleContent from './PeopleContent';
 import { usePeople } from '../../hooks/usePeople';
 
 const PeoplePage = () => {
   const { people, isLoading, hasError } = usePeople();
-  const { slug } = useParams();
 
   return (
     <>
@@ -23,7 +21,6 @@ const PeoplePage = () => {
                 hasError={hasError}
                 isLoading={isLoading}
                 people={people}
-                slug={slug}
               />
             </div>
           </div>

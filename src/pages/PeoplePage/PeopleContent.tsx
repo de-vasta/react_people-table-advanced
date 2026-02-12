@@ -1,18 +1,19 @@
 import { Person } from '../../types';
 import PeopleTable from '../../components/PeopleTable';
 import { Loader } from '../../components/Loader';
-import { FilterParam } from '../../types/filterParams';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { getFilteredPeople } from '../../utils/peopleHelper';
 
 interface Props {
   isLoading: boolean;
   hasError: boolean;
   people: Person[];
-  slug?: string;
 }
 
-const PeopleContent = ({ people, slug, isLoading, hasError }: Props) => {
+const PeopleContent = ({ people, isLoading, hasError }: Props) => {
   const [searchParams] = useSearchParams();
+
+  const { slug } = useParams();
 
   if (isLoading) {
     return <Loader />;
@@ -26,30 +27,15 @@ const PeopleContent = ({ people, slug, isLoading, hasError }: Props) => {
     );
   }
 
-  const filter = {
-    name: searchParams.get(FilterParam.Name)?.toLocaleLowerCase() ?? '',
-    sex: searchParams.get(FilterParam.Sex),
-    category: searchParams.getAll(FilterParam.Century),
-  };
-
-  const visiblePeople = (() => {
-    const hasName = ({ name }: Person) =>
-      name.toLocaleLowerCase().includes(filter.name);
-    const isSex = (person: Person) => !filter.sex || person.sex === filter.sex;
-    const isFromCentury = (person: Person) =>
-      !filter.category.length ||
-      filter.category.includes(Math.ceil(person.born / 100).toString());
-
-    const filteredPeople = people.filter(
-      person => hasName(person) && isSex(person) && isFromCentury(person),
-    );
-
-    return filteredPeople;
-  })();
+  const visiblePeople = getFilteredPeople(people, searchParams);
 
   return (
     <>
-      <PeopleTable people={visiblePeople} selectedPersonSlug={slug} />
+      <PeopleTable
+        people={visiblePeople}
+        selectedPersonSlug={slug}
+        searchParams={searchParams}
+      />
       {!people.length && (
         <p data-cy="noPeopleMessage">There are no people on the server</p>
       )}

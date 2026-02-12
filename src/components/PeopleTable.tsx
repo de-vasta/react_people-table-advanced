@@ -2,13 +2,23 @@ import classNames from 'classnames';
 import { memo } from 'react';
 import { Person } from '../types';
 import PersonLink from './PersonLink';
+import { SearchParamKey } from '../types/searchParams';
+import { SearchLink } from './SearchLink';
 
 interface Props {
   people: Person[];
   selectedPersonSlug?: string;
+  searchParams: URLSearchParams;
 }
 
-const PeopleTable = ({ people, selectedPersonSlug }: Props) => {
+enum PersonSortBy {
+  Name = 'name',
+  Sex = 'sex',
+  Born = 'born',
+  Died = 'died',
+}
+
+const PeopleTable = ({ people, selectedPersonSlug, searchParams }: Props) => {
   const nameToPerson = people.reduce(
     (acc, person) => acc.set(person.name, person),
     new Map<string, Person>(),
@@ -28,6 +38,42 @@ const PeopleTable = ({ people, selectedPersonSlug }: Props) => {
     return <PersonLink person={parent} />;
   };
 
+  const tableSortHeads = [...Object.entries(PersonSortBy)];
+  const sort = searchParams.get(SearchParamKey.Sort);
+  const order = searchParams.get(SearchParamKey.Order);
+
+  const handleSortParamChange = (sortBy: string) => {
+    if (!sort) {
+      return { [SearchParamKey.Sort]: sortBy, [SearchParamKey.Order]: null };
+    }
+
+    if (order) {
+      return {
+        [SearchParamKey.Sort]: null,
+        [SearchParamKey.Order]: null,
+      };
+    }
+
+    return { [SearchParamKey.Sort]: sortBy, [SearchParamKey.Order]: 'desc' };
+  };
+
+  const sortedPeople = people.toSorted((personA, personB) => {
+    const compareFactor = !order ? 1 : -1;
+
+    switch (sort) {
+      case PersonSortBy.Name.toString():
+        return compareFactor * personA.name.localeCompare(personB.name);
+      case PersonSortBy.Sex.toString():
+        return compareFactor * personA.sex.localeCompare(personB.sex);
+      case PersonSortBy.Born.toString():
+        return compareFactor * (personA.born - personB.born);
+      case PersonSortBy.Died.toString():
+        return compareFactor * (personA.died - personB.died);
+      default:
+        return 0;
+    }
+  });
+
   return (
     <table
       data-cy="peopleTable"
@@ -35,17 +81,33 @@ const PeopleTable = ({ people, selectedPersonSlug }: Props) => {
     >
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Sex</th>
-          <th>Born</th>
-          <th>Died</th>
+          {tableSortHeads.map(([name, param]) => (
+            <th key={name}>
+              <span className='class="is-flex is-flex-wrap-nowrap"'>
+                {name}
+                <SearchLink params={handleSortParamChange(param)}>
+                  <span className="icon">
+                    <i
+                      className={classNames('fas', {
+                        'fa-sort-up':
+                          sort === name.toLocaleLowerCase() && !order,
+                        'fa-sort-down':
+                          sort === name.toLocaleLowerCase() && order,
+                        'fa-sort': sort !== name.toLocaleLowerCase(),
+                      })}
+                    ></i>
+                  </span>
+                </SearchLink>
+              </span>
+            </th>
+          ))}
           <th>Mother</th>
           <th>Father</th>
         </tr>
       </thead>
 
       <tbody>
-        {people.map(person => (
+        {sortedPeople.map(person => (
           <tr
             data-cy="person"
             key={person.slug}
