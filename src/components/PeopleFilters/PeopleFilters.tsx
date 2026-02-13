@@ -1,23 +1,25 @@
 import { SearchParamKey } from '../../types/searchParams';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import SexFilter from './SexFilter';
 import CenturyFilter from './CenturyFilter';
-import { SearchLink } from '../SearchLink';
 import { getSearchWith, SearchParams } from '../../utils/searchHelper';
 import SearchFilter from './SearchFilter';
-import classNames from 'classnames';
 
 export const PeopleFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const clearSearchParams = {
-    [SearchParamKey.Name]: null,
-    [SearchParamKey.Sex]: null,
-    [SearchParamKey.Century]: null,
+  const buildClearSearch = (current: URLSearchParams) => {
+    const next = new URLSearchParams(current.toString());
+
+    next.delete(SearchParamKey.Name);
+    next.delete(SearchParamKey.Sex);
+    next.delete(SearchParamKey.Centuries);
+
+    return next.toString();
   };
 
   const handleSearchParamsChange = (params: SearchParams) => {
-    setSearchParams(getSearchWith(searchParams, params));
+    setSearchParams(prev => getSearchWith(prev, params));
   };
 
   return (
@@ -30,12 +32,12 @@ export const PeopleFilters = () => {
       />
       <CenturyFilter searchParams={searchParams} />
       <div className="panel-block">
-        <SearchLink
-          className={classNames('button is-link is-outlined is-fullwidth')}
-          params={clearSearchParams}
+        <Link
+          className="button is-link is-outlined is-fullwidth"
+          to={{ search: buildClearSearch(searchParams) }}
         >
           Reset all filters
-        </SearchLink>
+        </Link>
       </div>
     </nav>
   );

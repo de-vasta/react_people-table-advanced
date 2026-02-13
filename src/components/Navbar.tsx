@@ -1,17 +1,22 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, type To } from 'react-router-dom';
 
 import classNames from 'classnames';
 import { AppPath } from '../types/paths';
 
 interface NavLinkProp {
   className: ({ isActive }: { isActive: boolean }) => string;
-  to: string;
+  to: To;
   text: string;
 }
 
 const NavBar = () => {
+  const location = useLocation();
   const linkClassName = ({ isActive }: { isActive: boolean }) =>
     classNames('navbar-item', { 'has-background-grey-lighter': isActive });
+
+  const peopleTo: To = location.pathname.startsWith(AppPath.People)
+    ? { pathname: AppPath.People, search: location.search }
+    : AppPath.People;
 
   const navLinks: NavLinkProp[] = [
     {
@@ -21,7 +26,7 @@ const NavBar = () => {
     },
     {
       className: linkClassName,
-      to: AppPath.People,
+      to: peopleTo,
       text: 'People',
     },
   ];
@@ -36,7 +41,7 @@ const NavBar = () => {
       <div className="container">
         <div className="navbar-brand">
           {navLinks.map(({ className, to, text }) => (
-            <NavLink key={to} className={className} to={to}>
+            <NavLink key={text} className={className} to={to}>
               {text}
             </NavLink>
           ))}

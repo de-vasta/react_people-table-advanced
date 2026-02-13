@@ -43,21 +43,21 @@ const PeopleTable = ({ people, selectedPersonSlug, searchParams }: Props) => {
   const order = searchParams.get(SearchParamKey.Order);
 
   const handleSortParamChange = (sortBy: string) => {
-    if (!sort) {
+    if (sort !== sortBy) {
       return { [SearchParamKey.Sort]: sortBy, [SearchParamKey.Order]: null };
     }
 
-    if (order) {
-      return {
-        [SearchParamKey.Sort]: null,
-        [SearchParamKey.Order]: null,
-      };
+    if (!order) {
+      return { [SearchParamKey.Sort]: sortBy, [SearchParamKey.Order]: 'desc' };
     }
 
-    return { [SearchParamKey.Sort]: sortBy, [SearchParamKey.Order]: 'desc' };
+    return {
+      [SearchParamKey.Sort]: null,
+      [SearchParamKey.Order]: null,
+    };
   };
 
-  const sortedPeople = people.toSorted((personA, personB) => {
+  const sortedPeople = people.slice().sort((personA, personB) => {
     const compareFactor = !order ? 1 : -1;
 
     switch (sort) {
@@ -83,17 +83,15 @@ const PeopleTable = ({ people, selectedPersonSlug, searchParams }: Props) => {
         <tr>
           {tableSortHeads.map(([name, param]) => (
             <th key={name}>
-              <span className='class="is-flex is-flex-wrap-nowrap"'>
+              <span className="is-flex is-flex-wrap-nowrap">
                 {name}
                 <SearchLink params={handleSortParamChange(param)}>
                   <span className="icon">
                     <i
                       className={classNames('fas', {
-                        'fa-sort-up':
-                          sort === name.toLocaleLowerCase() && !order,
-                        'fa-sort-down':
-                          sort === name.toLocaleLowerCase() && order,
-                        'fa-sort': sort !== name.toLocaleLowerCase(),
+                        'fa-sort-up': sort === param && !order,
+                        'fa-sort-down': sort === param && order,
+                        'fa-sort': sort !== param,
                       })}
                     ></i>
                   </span>

@@ -1,18 +1,21 @@
 import { Person } from '../types';
 import { SearchParamKey } from '../types/searchParams';
+import { normalizeString, normalizeStrings } from './helpers';
 
 export const getFilteredPeople = (
   people: Person[],
   searchParams: URLSearchParams,
 ) => {
   const filter = {
-    name: searchParams.get(SearchParamKey.Name)?.toLocaleLowerCase() ?? '',
+    name: normalizeString(searchParams.get(SearchParamKey.Name) ?? ''),
     sex: searchParams.get(SearchParamKey.Sex),
-    category: searchParams.getAll(SearchParamKey.Century),
+    category: searchParams.getAll(SearchParamKey.Centuries),
   };
 
-  const hasName = ({ name }: Person) =>
-    name.toLocaleLowerCase().includes(filter.name);
+  const hasName = ({ name, fatherName, motherName }: Person) =>
+    normalizeStrings([name, fatherName ?? '-', motherName ?? '-']).some(n =>
+      n.includes(filter.name),
+    );
   const isSex = (person: Person) => !filter.sex || person.sex === filter.sex;
   const isFromCentury = (person: Person) =>
     !filter.category.length ||

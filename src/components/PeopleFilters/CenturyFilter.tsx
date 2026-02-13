@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { SearchLink } from '../SearchLink';
+import { Link } from 'react-router-dom';
 import { SearchParamKey } from '../../types/searchParams';
 
 const centuriesButtons = ['16', '17', '18', '19', '20'];
@@ -9,12 +9,26 @@ interface Props {
 }
 
 const CenturyFilter = ({ searchParams }: Props) => {
-  const selectedCenturies = searchParams.getAll(SearchParamKey.Century);
+  const selectedCenturies = searchParams.getAll(SearchParamKey.Centuries);
 
-  const toggleCentury = (century: string) => {
-    return selectedCenturies.includes(century)
-      ? selectedCenturies.filter(c => c !== century)
-      : [...selectedCenturies, century];
+  const toggleCentury = (current: string[], century: string) => {
+    return current.includes(century)
+      ? current.filter(c => c !== century)
+      : [...current, century];
+  };
+
+  const buildCenturySearch = (
+    current: URLSearchParams,
+    centuries: string[],
+  ) => {
+    const next = new URLSearchParams(current.toString());
+
+    next.delete(SearchParamKey.Centuries);
+    centuries.forEach(century => {
+      next.append(SearchParamKey.Centuries, century);
+    });
+
+    return next.toString();
   };
 
   return (
@@ -22,29 +36,34 @@ const CenturyFilter = ({ searchParams }: Props) => {
       <div className="level is-flex-grow-1 is-mobile" data-cy="CenturyFilter">
         <div className="level-left">
           {centuriesButtons.map(century => (
-            <SearchLink
+            <Link
               key={century}
               data-cy="century"
               className={classNames('button mr-1', {
                 'is-info': selectedCenturies.includes(century),
               })}
-              params={{ [SearchParamKey.Century]: toggleCentury(century) }}
+              to={{
+                search: buildCenturySearch(
+                  searchParams,
+                  toggleCentury(selectedCenturies, century),
+                ),
+              }}
             >
               {century}
-            </SearchLink>
+            </Link>
           ))}
         </div>
 
         <div className="level-right ml-4">
-          <SearchLink
+          <Link
             data-cy="centuryALL"
             className={classNames('button is-success', {
-              'is-outlined': searchParams.getAll(SearchParamKey.Century).length,
+              'is-outlined': selectedCenturies.length,
             })}
-            params={{ [SearchParamKey.Century]: null }}
+            to={{ search: buildCenturySearch(searchParams, []) }}
           >
             All
-          </SearchLink>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 export enum SearchParamKey {
   Sex = 'sex',
   Name = 'name',
-  Century = 'century',
+  Centuries = 'centuries',
   Sort = 'sort',
   Order = 'order',
 }
